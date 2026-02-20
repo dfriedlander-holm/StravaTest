@@ -1,0 +1,127 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap");
+
+:root {
+  --bg-top: #f4f1e8;
+  --bg-bottom: #d9e5f7;
+  --panel-bg: rgba(255, 255, 255, 0.85);
+  --panel-border: rgba(36, 55, 94, 0.15);
+  --text: #1d2a43;
+  --muted: #4f5f78;
+  --accent: #0e7a5f;
+  --accent-hover: #0b624c;
+  --error: #b42318;
+  --warning: #7a4f01;
+  --success: #0f766e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 10% 10%, rgba(236, 255, 247, 0.9), transparent 35%),
+    radial-gradient(circle at 90% 0%, rgba(214, 229, 255, 0.8), transparent 35%),
+    linear-gradient(165deg, var(--bg-top), var(--bg-bottom));
+}
+
+.shell {
+  width: min(760px, 92vw);
+  margin: 3rem auto;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4.8vw, 3rem);
+  letter-spacing: -0.03em;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+.intro {
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 18px;
+  padding: 1.1rem 1.2rem;
+  margin-bottom: 0.9rem;
+  backdrop-filter: blur(5px);
+}
+
+.panel.muted {
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.button {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.7rem 1rem;
+  text-decoration: none;
+  font-weight: 700;
+  color: #ffffff;
+  background: var(--accent);
+}
+
+.button:hover {
+  background: var(--accent-hover);
+}
+
+.status {
+  margin: 0.75rem 0 0;
+  color: var(--muted);
+}
+
+.status.error {
+  color: var(--error);
+}
+
+.status.warning {
+  color: var(--warning);
+}
+
+.status.success {
+  color: var(--success);
+}
+
+.run-grid {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.run-grid dt {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.run-grid dd {
+  margin: 0.2rem 0 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+ol {
+  margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+  .shell {
+    margin: 1.25rem auto;
+  }
+
+  .run-grid {
+    grid-template-columns: 1fr;
+  }
+}

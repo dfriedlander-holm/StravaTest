@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Running Tracker | Latest Strava Run</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <h1>Latest Strava Run</h1>
+      <p class="intro">Connect your Strava account, then this page will show your most recent run.</p>
+
+      <section class="panel">
+        <a id="connectLink" class="button" href="#" hidden>Connect with Strava</a>
+        <p id="status" class="status">Loading configuration...</p>
+      </section>
+
+      <section id="resultPanel" class="panel" hidden>
+        <h2 id="runName">Run</h2>
+        <dl class="run-grid">
+          <div>
+            <dt>Date</dt>
+            <dd id="runDate">-</dd>
+          </div>
+          <div>
+            <dt>Distance</dt>
+            <dd id="runDistance">-</dd>
+          </div>
+          <div>
+            <dt>Moving Time</dt>
+            <dd id="runTime">-</dd>
+          </div>
+          <div>
+            <dt>Pace</dt>
+            <dd id="runPace">-</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="panel muted">
+        <h2>Setup</h2>
+        <ol>
+          <li>Set <code>STRAVA_CLIENT_ID</code> and <code>STRAVA_CLIENT_SECRET</code> before starting the server.</li>
+          <li>In your Strava app settings, set Authorization Callback Domain to <code>localhost</code>.</li>
+          <li>Set <code>STRAVA_REDIRECT_URI</code> to exactly <code>http://localhost:8080/</code> (or your chosen host/port).</li>
+        </ol>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
