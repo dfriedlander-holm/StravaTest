@@ -41,13 +41,18 @@
       <section class="panel muted">
         <h2>Setup</h2>
         <ol>
-          <li>Set <code>STRAVA_CLIENT_ID</code> and <code>STRAVA_CLIENT_SECRET</code> before starting the server.</li>
-          <li>In your Strava app settings, set Authorization Callback Domain to <code>localhost</code>.</li>
-          <li>Set <code>STRAVA_REDIRECT_URI</code> to exactly <code>http://localhost:8080/</code> (or your chosen host/port).</li>
+          <li>Set <code>STRAVA_CLIENT_ID</code> and <code>STRAVA_CLIENT_SECRET</code> on your backend server.</li>
+          <li>Set Strava Authorization Callback Domain to your frontend domain (for example <code>localhost</code> or <code>yourname.github.io</code>).</li>
+          <li>Set <code>STRAVA_REDIRECT_URI</code> to your frontend URL exactly (for example <code>http://localhost:8080/</code> or <code>https://yourname.github.io/repo/</code>).</li>
         </ol>
+        <p>
+          If this page is on GitHub Pages, set <code>window.RUNNING_TRACKER_API_BASE</code> in <code>config.js</code>
+          to your deployed backend URL.
+        </p>
       </section>
     </main>
 
+    <script src="config.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

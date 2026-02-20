@@ -5,6 +5,7 @@ const path = require("path");
 const PORT = Number(process.env.PORT || 8080);
 const ROOT = __dirname;
 const MAX_BODY_BYTES = 32 * 1024;
+const API_PREFIX = "/api/";
 
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -21,6 +22,46 @@ const MIME_TYPES = {
 function sendJson(res, status, data) {
   res.writeHead(status, { "Content-Type": "application/json; charset=utf-8" });
   res.end(JSON.stringify(data));
+}
+
+function getAllowedOrigins() {
+  const raw = String(process.env.ALLOWED_ORIGINS || "").trim();
+  if (!raw) return [];
+  return raw
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+}
+
+function appendVaryHeader(res, value) {
+  const existing = res.getHeader("Vary");
+  if (!existing) {
+    res.setHeader("Vary", value);
+    return;
+  }
+
+  const existingValues = String(existing)
+    .split(",")
+    .map((entry) => entry.trim().toLowerCase());
+  if (!existingValues.includes(value.toLowerCase())) {
+    res.setHeader("Vary", `${existing}, ${value}`);
+  }
+}
+
+function setApiCorsHeaders(req, res) {
+  const allowedOrigins = getAllowedOrigins();
+  const requestOrigin = String(req.headers.origin || "");
+
+  if (allowedOrigins.length === 0) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  } else if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+    res.setHeader("Access-Control-Allow-Origin", requestOrigin);
+  }
+
+  appendVaryHeader(res, "Origin");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Max-Age", "86400");
 }
 
 function parseBody(req) {
@@ -63,7 +104,9 @@ function getRedirectUri(req) {
   }
 
   const host = req.headers.host || `localhost:${PORT}`;
-  return `http://${host}/`;
+  const forwardedProto = String(req.headers["x-forwarded-proto"] || "").split(",")[0].trim();
+  const protocol = forwardedProto || "http";
+  return `${protocol}://${host}/`;
 }
 
 function isRunActivity(activity) {
@@ -261,6 +304,16 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" });
     res.end("Bad Request");
     return;
+  }
+
+  if (req.url.startsWith(API_PREFIX)) {
+    setApiCorsHeaders(req, res);
+
+    if (req.method === "OPTIONS") {
+      res.writeHead(204);
+      res.end();
+      return;
+    }
   }
 
   if (req.method === "GET" && req.url.startsWith("/api/strava/config")) {

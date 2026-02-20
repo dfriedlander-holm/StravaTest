@@ -6,6 +6,11 @@ const runDateEl = document.getElementById("runDate");
 const runDistanceEl = document.getElementById("runDistance");
 const runTimeEl = document.getElementById("runTime");
 const runPaceEl = document.getElementById("runPace");
+const apiBase = String(window.RUNNING_TRACKER_API_BASE || "").replace(/\/+$/, "");
+
+function apiUrl(path) {
+  return `${apiBase}${path}`;
+}
 
 function setStatus(message, kind = "") {
   statusEl.className = `status ${kind}`.trim();
@@ -50,7 +55,7 @@ function renderRun(run) {
 }
 
 async function fetchConfig() {
-  const response = await fetch("/api/strava/config");
+  const response = await fetch(apiUrl("/api/strava/config"));
   const body = await response.json();
 
   if (!response.ok) {
@@ -61,7 +66,7 @@ async function fetchConfig() {
 }
 
 async function fetchLatestRun(code) {
-  const response = await fetch("/api/strava/latest-run", {
+  const response = await fetch(apiUrl("/api/strava/latest-run"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ code }),
@@ -119,6 +124,19 @@ async function init() {
     const cleanUrl = `${window.location.origin}${window.location.pathname}`;
     window.history.replaceState({}, document.title, cleanUrl);
   } catch (err) {
+    const likelyNetworkFailure = /failed to fetch|networkerror|load failed/i.test(String(err.message || ""));
+    if (likelyNetworkFailure) {
+      if (window.location.hostname.endsWith("github.io") && !apiBase) {
+        setStatus(
+          "This GitHub Pages site needs a backend URL. Set window.RUNNING_TRACKER_API_BASE in config.js.",
+          "error"
+        );
+        return;
+      }
+      setStatus("Could not reach the backend API. Check RUNNING_TRACKER_API_BASE and backend deployment.", "error");
+      return;
+    }
+
     setStatus(err.message, "error");
   }
 }
